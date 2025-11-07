@@ -1,5 +1,5 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
 import { viteStaticCopy } from 'vite-plugin-static-copy';
 
 export default defineConfig({
@@ -7,11 +7,9 @@ export default defineConfig({
     react(),
     viteStaticCopy({
       targets: [
-        {
-          src: 'public/manifest.json',
-          dest: '.',
-        }
-      ],
+        { src: 'public/manifest.json', dest: '.' },
+        { src: 'src/background.js', dest: '.' } 
+      ]
     }),
   ],
   build: {
@@ -19,11 +17,12 @@ export default defineConfig({
     rollupOptions: {
       input: {
         main: './index.html',
-        background: './src/background.ts',
+        content: 'src/contentScript.js'
       },
       output: {
         entryFileNames: (chunkInfo) => {
-          return chunkInfo.name === 'background' ? 'background.js' : 'assets/[name]-[hash].js';
+          if (chunkInfo.name === 'content') return 'contentScript.js';
+          return 'assets/[name]-[hash].js';
         },
       },
     },
