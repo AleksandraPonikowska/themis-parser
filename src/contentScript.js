@@ -47,6 +47,20 @@ window.addEventListener("load", () => {
         }
 
     }
+
+    function isKartkowka(){
+        
+        const select = document.querySelector('#subtitle select');
+        const selectedOption = select.options[select.selectedIndex];
+        const text = selectedOption.text;
+
+        if (text.includes('Kartkówka')) {
+            return true;
+        } else {
+            return false;
+        }
+
+    }
     
 
     function getRanksJSON() {
@@ -121,9 +135,13 @@ window.addEventListener("load", () => {
             output = mapped
             .map(u => `'${'+'.repeat(u.rankpoints)}`)
             .join('\n');
+        } else if(isKartkowka()){
+            output = mapped
+            .map(u => `${u.rankpoints + u.ranktotal*4}`)
+            .join('\n');
         } else {
             output = mapped
-            .map(u => `${u.rankpoints}\t${u.ranktotal}`)
+            .map(u => `${u.rankpoints}\t${u.ranktotal-u.rankpoints}`)
             .join('\n');
 
 
@@ -131,7 +149,7 @@ window.addEventListener("load", () => {
 
 
         navigator.clipboard.writeText(output)
-            .then(() => alert('Grades skopiowane do schowka!'))
+            .then(() => alert('Oceny skopiowane do schowka!'))
             .catch(err => console.error('Błąd kopiowania do schowka:', err));
     });
 
@@ -139,7 +157,7 @@ window.addEventListener("load", () => {
     btn3.addEventListener('click', () => {
     const currentMap = JSON.parse(localStorage.getItem('usersMap') || '{}');
     const input = prompt(
-      'Wprowadź mapę nick → pełne imię w formacie: "nick":"Imię Nazwisko", jedna para na linię',
+      'Wprowadź mapę nick → pełne imię w formacie: "nick1":"Imię Nazwisko1", "nick2":"Imię Nazwisko2"...',
       Object.entries(currentMap).map(([nick, full]) => `"${nick}":"${full}"`).join('\n')
     );
 
